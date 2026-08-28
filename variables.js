@@ -1,84 +1,23 @@
 export function updateVariables() {
-	let variables = []
-
-	variables.push(
-		{
-			name: 'Product ID',
-			variableId: 'productId',
-		},
-		{
-			name: 'Firmware Version',
-			variableId: 'firmware',
-		},
-		{
-			name: 'Host Name',
-			variableId: 'hostName',
-		},
-		{
-			name: 'Friendly Name',
-			variableId: 'friendlyName',
-		},
-		{
-			name: 'Domain Name',
-			variableId: 'domainName',
-		},
-		{
-			name: 'Mix Select Label',
-			variableId: 'mixSelectLabel',
-		},
-		{
-			name: 'Mix Select Value',
-			variableId: 'mixSelectValue',
-		},
-		{
-			name: 'Volume',
-			variableId: 'volume',
-		},
-		{
-			name: 'Volume (dB)',
-			variableId: 'volume_dB',
-		},
-		{
-			name: 'Level: Input 1',
-			variableId: 'levelInput1',
-		},
-		{
-			name: 'Level: Input 2',
-			variableId: 'levelInput2',
-		},
-		{
-			name: 'Level: Input 3',
-			variableId: 'levelInput3',
-		},
-		{
-			name: 'Level: Input 4',
-			variableId: 'levelInput4',
-		},
-		{
-			name: 'Level: Input 1+2',
-			variableId: 'levelInput12',
-		},
-		{
-			name: 'Level: Input 3+4',
-			variableId: 'levelInput34',
-		},
-		{
-			name: 'Level: Input 1+2+3+4',
-			variableId: 'levelInput1234',
-		},
-		{
-			name: 'Level: Output',
-			variableId: 'levelOutput',
-		},
-		{
-			name: 'Pot Position',
-			variableId: 'potPosition',
-		},
-		{
-			name: 'Device Temperature (C)',
-			variableId: 'temp',
-		},
-	)
-
-	this.setVariableDefinitions(variables)
+	this.setVariableDefinitions({
+		productId: { name: 'Product ID' },
+		firmware: { name: 'Firmware Version' },
+		hostName: { name: 'Host Name' },
+		friendlyName: { name: 'Friendly Name' },
+		domainName: { name: 'Domain Name' },
+		mixSelectLabel: { name: 'Mix Select Label' },
+		mixSelectValue: { name: 'Mix Select Value' },
+		volume: { name: 'Volume' },
+		volume_dB: { name: 'Volume (dB)' },
+		levelInput1: { name: 'Level: Input 1' },
+		levelInput2: { name: 'Level: Input 2' },
+		levelInput3: { name: 'Level: Input 3' },
+		levelInput4: { name: 'Level: Input 4' },
+		levelInput12: { name: 'Level: Input 1+2' },
+		levelInput34: { name: 'Level: Input 3+4' },
+		levelInput1234: { name: 'Level: Input 1+2+3+4' },
+		levelOutput: { name: 'Level: Output' },
+		potPosition: { name: 'Pot Position' },
+		temp: { name: 'Device Temperature (C)' },
+	})
 }

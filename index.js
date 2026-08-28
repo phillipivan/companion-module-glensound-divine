@@ -1,11 +1,12 @@
 // Glensound Divine
 
-import { InstanceBase, InstanceStatus, Regex, runEntrypoint, UDPHelper } from '@companion-module/base'
+import { InstanceBase, InstanceStatus, Regex, UDPHelper } from '@companion-module/base'
 import { updateActions } from './actions.js'
 import { updateFeedbacks } from './feedback.js'
 import { updatePresets } from './presets.js'
 import { updateVariables } from './variables.js'
-import { upgradeScripts } from './upgrades.js'
+import { UpgradeScripts } from './upgrades.js'
+import { channelChoices } from './choices.js'
 import PQueue from 'p-queue'
 const queue = new PQueue({ concurrency: 1, interval: 5, intervalCap: 1 })
 const MessageTimeOut = 10000
@@ -16,7 +17,9 @@ function readUint8AsTwosComplement(uint8Value) {
 	return Number(int8Array[0])
 }
 
-class GS_Divine extends InstanceBase {
+export { UpgradeScripts }
+
+export default class GS_Divine extends InstanceBase {
 	constructor(internal) {
 		super(internal)
 		this.updateActions = updateActions.bind(this)
@@ -28,7 +31,6 @@ class GS_Divine extends InstanceBase {
 	}
 
 	getConfigFields() {
-		console.log('config fields')
 		return [
 			{
 				type: 'static-text',
@@ -54,7 +56,7 @@ class GS_Divine extends InstanceBase {
 			},
 			{
 				type: 'static-text',
-				id: 'info',
+				id: 'controllerIdInfo',
 				width: 6,
 				label: 'Controller ID',
 				value:
@@ -88,32 +90,19 @@ class GS_Divine extends InstanceBase {
 
 		if (this.socket !== undefined) {
 			this.socket.destroy()
+			delete this.socket
 		}
-
-		console.log('destroy', this.id)
 	}
 
 	async init(config) {
-		console.log('init GS')
-		process.title = this.label
 		this.config = config
 		this.volume = 0
 		this.unMute = 0
 		this.mixSelected = undefined
 		this.timer = undefined
-		this.channels = [
-			{ id: '01', label: 'Channel 1' },
-			{ id: '02', label: 'Channel 2' },
-			{ id: '03', label: 'Channel 3' },
-			{ id: '04', label: 'Channel 4' },
-			{ id: '05', label: 'Channels 1-2' },
-			{ id: '06', label: 'Channels 3-4' },
-			{ id: '07', label: 'Channels 1-4' },
-		]
+		this.channels = channelChoices
 		this.levels = new Map()
 		this.indicators = new Map()
-
-		console.log(this.config)
 
 		this.updateActions()
 		this.updateVariables()
@@ -124,9 +113,7 @@ class GS_Divine extends InstanceBase {
 	}
 
 	initUDP() {
-		console.log('init_UDP ' + this.config.host + ':' + this.config.port)
-
-		this.receiveBuffer = ''
+		this.log('debug', `initUDP ${this.config.host}:${this.config.port}`)
 
 		if (this.socket !== undefined) {
 			this.socket.destroy()
@@ -134,7 +121,7 @@ class GS_Divine extends InstanceBase {
 		}
 
 		if (this.config.host) {
-			this.socket = new UDPHelper(this.config.host, this.config.port)
+			this.socket = new UDPHelper(this.config.host, Number(this.config.port))
 
 			this.socket.on('status_change', (status, message) => {
 				if (this.status == status) return
@@ -186,8 +173,7 @@ class GS_Divine extends InstanceBase {
 		// data = Array.from([71,83,32,67,116,114,108,0,56,0,10,0,248,0,0,0,4,51,9,0,22,0,0,0,2,0,0,0,0,0,5,7,40,0,0,0,0,0,0,0,6,2,2,0,0,1,7,7,254,0,50,0,0,0,0,0])
 
 		if (data != undefined) {
-			this.log('debug', 'length: ' + data.length + ' type: ' + typeof data)
-			this.log('debug', data)
+			this.log('debug', `length: ${data.length} data: ${Buffer.from(data).toString('hex')}`)
 
 			if (data.length == 144) {
 				if (data[10] == 4) {
@@ -380,8 +366,6 @@ class GS_Divine extends InstanceBase {
 
 	async configUpdated(config) {
 		queue.clear()
-		console.log('configUpdated')
-		process.title = this.label
 		let resetConnection = false
 
 		if (this.config.host != config.host || this.config.port != config.port) {
@@ -446,12 +430,11 @@ class GS_Divine extends InstanceBase {
 		if (message !== undefined) {
 			await queue.add(async () => {
 				if (this.socket !== undefined && !this.socket.isDestroyed) {
-					await this.socket
-						.send(this.hexStringToBuffer(message))
-						.then(() => {})
-						.catch((error) => {
-							this.log('warn', `Message send failed!\nMessage: ${message}\nError: ${JSON.stringify(error)}`)
-						})
+					try {
+						await this.socket.sendAsync(this.hexStringToBuffer(message))
+					} catch (error) {
+						this.log('warn', `Message send failed!\nMessage: ${message}\nError: ${error?.message ?? String(error)}`)
+					}
 				} else {
 					this.log('warn', 'Socket not connected')
 				}
@@ -495,5 +478,3 @@ class GS_Divine extends InstanceBase {
 		}
 	}
 }
-
-runEntrypoint(GS_Divine, upgradeScripts)

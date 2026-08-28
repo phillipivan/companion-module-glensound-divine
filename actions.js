@@ -10,12 +10,13 @@ export function updateActions() {
 				id: 'mix_selection',
 				default: this.channels[0].id,
 				choices: this.channels,
-				allowCustom: true,
-				tooltip: `Variables must return a value between 01 and 07`,
+				allowCustom: false,
+				allowInvalidValues: true,
+				tooltip: `Expressions must return a value between 01 and 07`,
 			},
 		],
-		callback: async ({ options }, context) => {
-			const mixSel = (await context.parseVariablesInString(options.mix_selection)).padStart(2, '0')
+		callback: async ({ options }) => {
+			const mixSel = String(options.mix_selection).padStart(2, '0')
 			if (!this.channels.map((channel) => channel.id).includes(mixSel)) {
 				this.log('warn', `Invalid channel selection: ${mixSel}, value should be 01 - 07`)
 				return
@@ -35,8 +36,9 @@ export function updateActions() {
 				id: 'mix_enable',
 				default: this.channels[0].id,
 				choices: this.channels,
-				allowCustom: true,
-				tooltip: `Variables must return a value between 01 and 07`,
+				allowCustom: false,
+				allowInvalidValues: true,
+				tooltip: `Expressions must return a value between 01 and 07`,
 			},
 			{
 				type: 'dropdown',
@@ -49,8 +51,8 @@ export function updateActions() {
 				],
 			},
 		],
-		callback: async ({ options }, context) => {
-			const mixEnable = (await context.parseVariablesInString(options.mix_enable)).padStart(2, '0')
+		callback: async ({ options }) => {
+			const mixEnable = String(options.mix_enable).padStart(2, '0')
 			if (!this.channels.map((channel) => channel.id).includes(mixEnable)) {
 				this.log('warn', `Invalid channel selection: ${mixEnable}, value should be 01 - 07`)
 				return
@@ -73,6 +75,8 @@ export function updateActions() {
 				default: 50,
 				range: true,
 				step: 1,
+				asInteger: true,
+				clampValues: true,
 				tooltip: 'Each step is 0.5dB',
 			},
 		],
@@ -120,6 +124,8 @@ export function updateActions() {
 				min: 1,
 				max: 24,
 				default: 4,
+				asInteger: true,
+				clampValues: true,
 				tooltip: 'Each step is 0.5dB',
 			},
 		],
@@ -145,6 +151,8 @@ export function updateActions() {
 				min: 1,
 				max: 24,
 				default: 4,
+				asInteger: true,
+				clampValues: true,
 				tooltip: 'Each step is 0.5dB',
 			},
 		],
@@ -166,9 +174,6 @@ export function updateActions() {
 		callback: async () => {
 			// get info has no command data
 			await this.sendMessage(null, '05')
-			// temp for testing!
-			// this.processDeviceData(null)
-			// remove line above!
 		},
 	}
 
