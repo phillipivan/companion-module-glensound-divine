@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"lib": ["ES2023"],
+		"types": ["node"],
+
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+
+		"strict": true,
+		"noImplicitAny": true,
+		// `config` is assigned in init(), which the host always calls before anything
+		// else. This is the JSDoc equivalent of `config!: ModuleConfig` in a TS module.
+		"strictPropertyInitialization": false,
+		"noUncheckedIndexedAccess": false,
+		"exactOptionalPropertyTypes": false,
+
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true
+	},
+	"include": ["*.js"],
+	"exclude": ["node_modules"]
+}

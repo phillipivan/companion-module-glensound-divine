@@ -1,5 +1,14 @@
-export function updateVariables() {
-	this.setVariableDefinitions({
+/**
+ * @import GS_Divine from './index.js'
+ */
+
+/**
+ * Declare the variables this module exposes.
+ * @param {GS_Divine} self
+ * @returns {void}
+ */
+export function updateVariables(self) {
+	self.setVariableDefinitions({
 		productId: { name: 'Product ID' },
 		firmware: { name: 'Firmware Version' },
 		hostName: { name: 'Host Name' },

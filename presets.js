@@ -1,6 +1,18 @@
 import { combineRgb } from '@companion-module/base'
 
-export function updatePresets() {
+/**
+ * @import { CompanionPresetDefinitions, CompanionPresetSection } from '@companion-module/base'
+ * @import { ModuleSchema } from './types.js'
+ * @import GS_Divine from './index.js'
+ */
+
+/**
+ * Declare the presets this module offers.
+ * @param {GS_Divine} self
+ * @returns {void}
+ */
+export function updatePresets(self) {
+	/** @type {CompanionPresetSection<ModuleSchema>[]} */
 	const structure = [
 		{
 			id: 'volume',
@@ -9,6 +21,7 @@ export function updatePresets() {
 		},
 	]
 
+	/** @type {CompanionPresetDefinitions<ModuleSchema>} */
 	const presets = {}
 
 	presets['VolumeKnob'] = {
@@ -65,5 +78,5 @@ export function updatePresets() {
 		],
 	}
 
-	this.setPresetDefinitions(structure, presets)
+	self.setPresetDefinitions(structure, presets)
 }

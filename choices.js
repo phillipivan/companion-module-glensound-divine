@@ -1,7 +1,12 @@
+/**
+ * @import { DropdownChoice } from '@companion-module/base'
+ */
+
 // Shared dropdown choices.
 // The upgrade scripts validate stored values against these lists, so they must stay
 // the single source of truth for what the channel dropdowns accept.
 
+/** @type {DropdownChoice<string>[]} */
 export const channelChoices = [
 	{ id: '01', label: 'Channel 1' },
 	{ id: '02', label: 'Channel 2' },
@@ -12,7 +17,10 @@ export const channelChoices = [
 	{ id: '07', label: 'Channels 1-4' },
 ]
 
+/** @type {DropdownChoice<string>[]} */
 export const channelLevelChoices = [...channelChoices, { id: '08', label: 'Output' }]
 
-export const channelIds = channelChoices.map((choice) => choice.id)
-export const channelLevelIds = channelLevelChoices.map((choice) => choice.id)
+/** @type {string[]} */
+export const channelIds = channelChoices.map((choice) => String(choice.id))
+/** @type {string[]} */
+export const channelLevelIds = channelLevelChoices.map((choice) => String(choice.id))
