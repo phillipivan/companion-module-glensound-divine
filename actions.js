@@ -15,7 +15,7 @@ const logger = createModuleLogger('Actions')
  */
 export function updateActions(self) {
 	/** @type {CompanionActionDefinitions<ModuleActions>} */
-	
+
 	const actions = {
 		mix_selection: {
 			name: 'Mix Selection',
