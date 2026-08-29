@@ -1,8 +1,12 @@
+import { createModuleLogger } from '@companion-module/base'
+
 /**
  * @import { CompanionActionDefinitions } from '@companion-module/base'
  * @import { ModuleActions } from './types.js'
  * @import GS_Divine from './index.js'
  */
+
+const logger = createModuleLogger('Actions')
 
 /**
  * Declare the actions this module offers.
@@ -11,6 +15,7 @@
  */
 export function updateActions(self) {
 	/** @type {CompanionActionDefinitions<ModuleActions>} */
+	
 	const actions = {
 		mix_selection: {
 			name: 'Mix Selection',
@@ -29,10 +34,10 @@ export function updateActions(self) {
 			callback: async ({ options }) => {
 				const mixSel = String(options.mix_selection).padStart(2, '0')
 				if (!self.channels.map((channel) => channel.id).includes(mixSel)) {
-					self.log('warn', `Invalid channel selection: ${mixSel}, value should be 01 - 07`)
+					logger.warn(`Invalid channel selection: ${mixSel}, value should be 01 - 07`)
 					return
 				}
-				self.log('debug', 'mix select: ' + mixSel)
+				logger.debug('mix select: ' + mixSel)
 				const cmd = '05' + mixSel + '0000'
 				await self.sendMessage(cmd, '03')
 			},
@@ -65,10 +70,10 @@ export function updateActions(self) {
 			callback: async ({ options }) => {
 				const mixEnable = String(options.mix_enable).padStart(2, '0')
 				if (!self.channels.map((channel) => channel.id).includes(mixEnable)) {
-					self.log('warn', `Invalid channel selection: ${mixEnable}, value should be 01 - 07`)
+					logger.warn(`Invalid channel selection: ${mixEnable}, value should be 01 - 07`)
 					return
 				}
-				self.log('debug', 'mix enable: ' + mixEnable + ':' + options.mix_enable_mode)
+				logger.debug('mix enable: ' + mixEnable + ':' + options.mix_enable_mode)
 				const cmd = '06' + mixEnable + options.mix_enable_mode + '00'
 				await self.sendMessage(cmd, '03')
 			},
@@ -93,7 +98,7 @@ export function updateActions(self) {
 			],
 			callback: async ({ options }) => {
 				self.volume = Math.round(options.volume)
-				self.log('debug', 'vol: ' + self.volume)
+				logger.debug('vol: ' + self.volume)
 				const cmd = '0E' + self.volume.toString(16).padStart(2, '0') + '0000'
 				await self.sendMessage(cmd, '03')
 			},
@@ -108,7 +113,7 @@ export function updateActions(self) {
 					self.unMute = self.volume
 				}
 				self.volume = 0
-				self.log('debug', 'mute: ' + self.volume)
+				logger.debug('mute: ' + self.volume)
 				const cmd = '0E' + self.volume.toString(16).padStart(2, '0') + '0000'
 				await self.sendMessage(cmd, '03')
 			},
@@ -119,7 +124,7 @@ export function updateActions(self) {
 			options: [],
 			callback: async () => {
 				self.volume = self.unMute
-				self.log('debug', 'unmute: ' + self.volume)
+				logger.debug('unmute: ' + self.volume)
 				const cmd = '0E' + self.volume.toString(16).padStart(2, '0') + '0000'
 				await self.sendMessage(cmd, '03')
 			},
@@ -146,7 +151,7 @@ export function updateActions(self) {
 				} else {
 					self.volume += options.step_up
 				}
-				self.log('debug', 'vol: ' + self.volume)
+				logger.debug('vol: ' + self.volume)
 				const cmd = '0E' + self.volume.toString(16).padStart(2, '0') + '0000'
 				await self.sendMessage(cmd, '03')
 			},
@@ -173,7 +178,7 @@ export function updateActions(self) {
 				} else {
 					self.volume -= options.step_down
 				}
-				self.log('debug', 'vol: ' + self.volume)
+				logger.debug('vol: ' + self.volume)
 				const cmd = '0E' + self.volume.toString(16).padStart(2, '0') + '0000'
 				await self.sendMessage(cmd, '03')
 			},
@@ -183,6 +188,7 @@ export function updateActions(self) {
 			name: 'Get Info',
 			options: [],
 			callback: async () => {
+				logger.debug('get info')
 				// get info has no command data
 				await self.sendMessage(null, '05')
 			},

@@ -1,6 +1,8 @@
-import { combineRgb } from '@companion-module/base'
+import { combineRgb, createModuleLogger } from '@companion-module/base'
 import { graphics } from 'companion-module-utils'
 import { channelLevelChoices } from './choices.js'
+
+const logger = createModuleLogger('Feedbacks')
 
 /**
  * @import { CompanionFeedbackDefinitions, DropdownChoice, SomeCompanionFeedbackInputField } from '@companion-module/base'
@@ -71,7 +73,7 @@ export function updateFeedbacks(self) {
 			],
 			callback: (feedback, _context) => {
 				if (feedback.image === undefined) {
-					self.log('debug', 'VUMeter feedback: control does not support an image buffer')
+					logger.debug('VUMeter feedback: control does not support an image buffer')
 					return {}
 				}
 				const position = feedback.options.position
@@ -180,7 +182,7 @@ export function updateFeedbacks(self) {
 			],
 			callback: (feedback, _context) => {
 				if (feedback.image === undefined) {
-					self.log('debug', 'Indicator feedback: control does not support an image buffer')
+					logger.debug('Indicator feedback: control does not support an image buffer')
 					return {}
 				}
 				const position = feedback.options.position
